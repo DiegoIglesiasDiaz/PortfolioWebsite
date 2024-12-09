@@ -75,7 +75,7 @@ jobs:
           npm run build
 
     # Run Application
-    - name: Restart application using PM2
+    - name: Run Application
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ vars.VPS_HOST }}
@@ -83,7 +83,5 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /var/app/portfolio
-
-          # Restart the application using PM2
           npm start
 
