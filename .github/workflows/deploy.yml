@@ -1,0 +1,88 @@
+name: Portfolio Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+
+    runs-on: self-hosted
+    environment: Production
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Set up Node.js
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    # Install dependencies
+    - name: Install dependencies
+      run: npm ci
+
+    # Clean previous builds
+    - name: Clean previous builds
+      run: |
+        rm -rf .next
+        rm -rf node_modules
+
+    # Deploy to VPS via Git
+    - name: Deploy to VPS via Git
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ vars.VPS_HOST }}
+        username: ${{ vars.VPS_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          # Go to the project directory
+          cd /var/app/portfolio
+
+          # If the directory is not a git repo, initialize it and add the remote
+          if [ ! -d ".git" ]; then
+            git init
+            git remote add origin https://github.com/${{ github.repository }}.git
+          fi
+
+          # Pull the latest code from GitHub
+          git pull origin main
+
+    # Install production dependencies and build the project on VPS
+    - name: Install production dependencies and build project
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ vars.VPS_HOST }}
+        username: ${{ vars.VPS_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /var/app/portfolio
+
+          # Install production dependencies
+          npm install
+
+          # Build the project again (in case there were any new dependencies)
+          npm run build
+
+    # Run Application
+    - name: Restart application using PM2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ vars.VPS_HOST }}
+        username: ${{ vars.VPS_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /var/app/portfolio
+
+          # Restart the application using PM2
+          npm start
+
