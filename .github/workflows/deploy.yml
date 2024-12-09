@@ -2,9 +2,9 @@ name: Portfolio Deployment
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   deploy:
@@ -55,7 +55,7 @@ jobs:
           fi
 
           # Pull the latest code from GitHub
-          git pull origin main
+          git pull origin master
 
     # Install production dependencies and build the project on VPS
     - name: Install production dependencies and build project
