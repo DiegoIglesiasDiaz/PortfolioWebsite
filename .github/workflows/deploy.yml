@@ -28,7 +28,9 @@ jobs:
 
     # Install dependencies
     - name: Install dependencies
-      run: ls -la #npm ci
+      run: npm install  
+        npm fund        
+        npm ci
 
     # Clean previous builds
     - name: Clean previous builds
