@@ -47,7 +47,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           # Go to the project directory
-          cd /var/app/portfolio
+          cd ${{ vars.PROJECT_PATH}}
 
           # If the directory is not a git repo, initialize it and add the remote
           if [ ! -d ".git" ]; then
@@ -66,7 +66,7 @@ jobs:
         username: ${{ vars.VPS_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /var/app/portfolio
+          cd ${{ vars.PROJECT_PATH}}
 
           # Install production dependencies
           npm install
@@ -82,6 +82,6 @@ jobs:
         username: ${{ vars.VPS_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /var/app/portfolio
-          npm start
+          cd ${{ vars.PROJECT_PATH}}
+          nohup npm start &> /dev/null &
 
