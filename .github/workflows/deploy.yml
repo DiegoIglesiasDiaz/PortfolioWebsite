@@ -35,10 +35,10 @@ jobs:
     # Install production dependencies and build the project on VPS
     - name: Install production dependencies and build project on VPS
       run: |
-          cd ${{ vars.PROJECT_PATH }}
+          cd ${{ vars.REPO_DIRECTORY }}
           npm install --production
-          npm run build
           npm ci
+          npm run build
 
     # Run Application
     - name: Run Application on VPS
