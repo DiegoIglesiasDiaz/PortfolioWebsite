@@ -37,8 +37,8 @@ jobs:
       run: |
           cd ${{ vars.PROJECT_PATH }}
           npm install --production
-          npm ci
           npm run build
+          npm ci
 
     # Run Application
     - name: Run Application on VPS
