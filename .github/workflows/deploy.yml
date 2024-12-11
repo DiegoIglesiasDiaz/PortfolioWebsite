@@ -12,19 +12,13 @@ jobs:
     # Checkout the repository
     - name: Checkout code
       uses: actions/checkout@v4
-
-    # Install dependencies locally on the runner
-    - name: Install dependencies local
-      run: |
-        npm install
-        npm ci
-
+    
     # Clean previous builds
     - name: Clean previous builds
       run: |
         rm -rf .next
         rm -rf node_modules
-
+    
     # Deploy to VPS via Git
     - name: Clone or Pull Repository
       run: |
@@ -42,6 +36,7 @@ jobs:
     - name: Install production dependencies and build project on VPS
       run: |
           cd ${{ vars.PROJECT_PATH }}
+          npm ci
           npm install --production
           npm run build
 
